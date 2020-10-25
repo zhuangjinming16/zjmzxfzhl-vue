@@ -22,6 +22,8 @@
     "core-js": "^2.6.11",
     "el-table-editabled": "^1.0.22",
     "element-ui": "^2.13.2",
+    "lodash.clonedeep": "^4.5.0",
+    "lodash.merge": "^4.6.2",
     "form-making": "^1.2.9",
     "js-cookie": "2.2.0",
     "normalize.css": "7.0.0",
@@ -37,6 +39,8 @@
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.12.1",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.12.1",
     "@babel/register": "7.0.0",
     "@vue/cli-plugin-babel": "3.6.0",
     "@vue/cli-plugin-eslint": "3.6.0",

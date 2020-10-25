@@ -92,6 +92,7 @@
     import newXml from './resources/newDiagram.js'
 
     export default {
+        name: 'VueBpmn',
         props: {
             modelData: {
                 type: Object,

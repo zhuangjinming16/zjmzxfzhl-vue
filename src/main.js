@@ -22,7 +22,7 @@ import {formatDictText, getDicts} from '@/utils/util'
 
 import permission from "./directive/permission/permission";
 
-Vue.use(ErrorPlugin)
+//Vue.use(ErrorPlugin)
 
 // import FormMaking from 'form-making-advanced'
 // import 'form-making-advanced/dist/FormMaking.css'

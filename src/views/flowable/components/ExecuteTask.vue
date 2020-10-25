@@ -151,6 +151,7 @@
             },
             checkMessage() {
                 if (!this.message || this.message === '') {
+                    Message.error("请输入意见")
                     throw new CustomError("请输入意见")
                 }
             },
@@ -177,6 +178,7 @@
                             })
                         }
                     }).catch(e => {
+                        console.info(e)
                     })
                 } else {
                     putAction('/flowable/task/complete', {

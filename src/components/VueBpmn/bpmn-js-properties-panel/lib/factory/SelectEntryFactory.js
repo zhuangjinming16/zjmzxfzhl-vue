@@ -50,7 +50,7 @@ var selectbox = function (options, defaultParameters) {
         selectOptions = addEmptyParameter(selectOptions);
     }
 
-    const multiple = resource.multiple || '';
+    const multiple = resource.multiple && (resource.multiple + ' style="height:90px" ') || '';
     resource.html =
         '<label for="flowable-' + escapeHTML(resource.id) + '"' +
         (canBeDisabled ? 'data-disable="isDisabled" ' : '') +
@@ -61,7 +61,7 @@ var selectbox = function (options, defaultParameters) {
         (canBeDisabled ? 'data-disable="isDisabled" ' : '') +
         (canBeHidden ? 'data-show="isHidden" ' : '') +
         ' data-value>';
-
+    console.info(resource.html)
     if (isList(selectOptions)) {
         forEach(selectOptions, function (option) {
             resource.html += '<option value="' + escapeHTML(option.value) + '">' +

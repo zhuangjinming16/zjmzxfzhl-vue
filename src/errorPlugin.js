@@ -19,12 +19,6 @@ const errorHandler = (error, vm, info) => {
 }
 let GlobalError = {
     install: (Vue, options) => {
-        /**
-         * 全局异常处理
-         * @param {
-  * } error
-         * @param {*} vm
-         */
         Vue.config.errorHandler = errorHandler
         Vue.mixin({
             beforeCreate() {
