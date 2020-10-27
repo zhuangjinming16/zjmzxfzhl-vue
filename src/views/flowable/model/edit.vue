@@ -6,8 +6,8 @@
 <script>
     import {getAction, putAction} from '@/api/manage'
     import {Message} from 'element-ui'
-    import VueBpmn from "@/components/VueBpmn"; // 原生面板
-    // import VueBpmn from "@/components/VueElementuiBpmn"; // elementui面板
+    // import VueBpmn from "@/components/VueBpmn"; // 原生面板
+    import VueBpmn from "@/components/VueElementuiBpmn"; // elementui面板
 
     export default {
         name: 'FlowableModelEdit',

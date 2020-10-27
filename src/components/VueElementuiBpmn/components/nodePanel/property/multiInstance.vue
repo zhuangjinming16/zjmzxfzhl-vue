@@ -40,7 +40,8 @@
                                 },
                                 {
                                     label: '串行',
-                                    value: true},
+                                    value: true
+                                },
                                 {
                                     label: '并行',
                                     value: false
@@ -104,9 +105,9 @@
                 if (!loopCharacteristics) {
                     loopCharacteristics = this.modeler.get('moddle').create('bpmn:MultiInstanceLoopCharacteristics')
                 }
-                if(this.formData.isSequential !== undefined){
-                    loopCharacteristics.isSequential = this.formData.isSequential
-                }
+
+                loopCharacteristics.isSequential = this.formData.isSequential
+
                 if(this.formData.collection){
                     loopCharacteristics.$attrs['flowable:collection'] = this.formData.collection
                 }
