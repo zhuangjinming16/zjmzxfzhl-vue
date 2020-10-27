@@ -1,16 +1,13 @@
 <template>
     <div>
-        <el-dialog
-                title="多实例配置"
-                :visible.sync="dialogVisible"
-                width="500px"
-                :close-on-click-modal="false"
-                :close-on-press-escape="false"
-                :show-close="false"
-                class="muti-instance"
-                @closed="$emit('close')"
-        >
+        <el-dialog title="多实例配置" :visible.sync="dialogVisible" @closed="$emit('close')">
             <x-form ref="xForm" v-model="formData" :config="formConfig"/>
+            <div slot="footer" class="dialog-footer">
+                <el-button icon="el-icon-close" @click="dialogVisible = false">取消</el-button>
+                <el-button icon="el-icon-check" type="primary"
+                           @click="save">确定
+                </el-button>
+            </div>
         </el-dialog>
     </div>
 </template>
@@ -73,16 +70,6 @@
                             name: 'completionCondition',
                             label: '完成条件'
                             //tooltip: '多实例活动在所有实例都完成时结束，然而也可以指定一个表达式，在每个实例<br />结束时进行计算。当表达式计算为true时，将销毁所有剩余的实例，并结束多实例<br />活动，继续执行流程。例如 ${nrOfCompletedInstances/nrOfInstances >= 0.6 }，<br />表示当任务完成60%时，该节点就算完成'
-                        }
-                    ],
-                    operate: [
-                        {
-                            text: '取消', icon:'el-icon-close' ,type: 'default', show: true, click: () => {
-                                _this.dialogVisible = false
-                            }
-                        },
-                        {
-                            text: '确定', icon:'el-icon-check', show: true, click: _this.save
                         }
                     ]
                 }
