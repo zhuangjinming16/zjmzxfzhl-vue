@@ -339,7 +339,7 @@
                 ?.filter(item => item.$type === 'flowable:TaskListener').length ?? 0
             },
             computedHasMultiInstance() {
-                if (this.element.businessObject.multiInstanceLoopCharacteristics) {
+                if (this.element.businessObject.loopCharacteristics) {
                     this.hasMultiInstance = true
                 } else {
                     this.hasMultiInstance = false
