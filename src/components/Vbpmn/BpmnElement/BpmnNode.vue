@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-form ref="refForm" :model="formData" :rules="rules" :inline="true" label-width="75px">
+        <el-form ref="refForm" :model="formData" :rules="rules" :inline="false" label-width="75px">
             <el-collapse v-model="activeName" accordion>
                 <el-collapse-item name="1">
                     <template slot="title">
@@ -14,6 +14,10 @@
                         <el-input v-model="formData.name" clearable/>
                     </el-form-item>
 
+                    <el-form-item v-if="!!showConfig.initiator" label="发起人" prop="initiator">
+                        <el-input v-model="formData.initiator" clearable/>
+                    </el-form-item>
+
                     <el-form-item label="任务分类" prop="taskCategory">
                         <el-select v-model="formData.category">
                             <el-option v-for="item in this.taskCategory" :label="item.name"
@@ -23,6 +27,12 @@
 
                     <el-form-item label="异步" prop="async">
                         <el-switch v-model="formData.async"></el-switch>
+                    </el-form-item>
+
+                    <el-form-item v-if="!!showConfig.multiInstance" label="多实例">
+                        <el-badge :is-dot="hasMultiInstance">
+                            <el-button @click="multiInstanceDrawer = true">编辑</el-button>
+                        </el-badge>
                     </el-form-item>
 
                 </el-collapse-item>
@@ -48,17 +58,21 @@
                         <el-input v-model="formData.formKey" clearable/>
                     </el-form-item>
                 </el-collapse-item>
+
             </el-collapse>
         </el-form>
 
+        <multi-instance v-if="!!showConfig.multiInstance" :element="element" :modeler="modeler" @changeMultiInstanceDrawer="changeMultiInstanceDrawer" @saveMultiInstance="saveMultiInstance" :multiInstanceDrawer="multiInstanceDrawer"></multi-instance>
     </div>
 </template>
 
 <script>
     import mixinPanel from '../mixins/mixinPanel'
+    import MultiInstance from "../properties/multiInstance";
 
     export default {
         name: 'BpmnNode',
+        components: {MultiInstance},
         mixins: [mixinPanel],
         props: {
             taskCategory: {
@@ -73,22 +87,9 @@
                 rules: {
                     id: [{required: true, message: '该项不能为空', trigger: 'change'}],
                     name: [{required: true, message: '该项不能为空', trigger: 'change'}]
-                }
-            }
-        },
-        computed: {
-            executionListenerLength() {
-                return this.element.businessObject.extensionElements?.values?.filter(item => item.$type === 'flowable:ExecutionListener').length ?? 0
-            },
-            taskListenerLength() {
-                return this.element.businessObject.extensionElements?.values?.filter(item => item.$type === 'flowable:TaskListener').length ?? 0
-            },
-            hasMultiInstance() {
-                let hasMultiInstance = false
-                if (this.element.businessObject.loopCharacteristics) {
-                    hasMultiInstance = true
-                }
-                return hasMultiInstance
+                },
+                multiInstanceDrawer: false,
+                hasMultiInstance: false
             }
         },
         watch: {
@@ -160,7 +161,16 @@
                 ...this.element.businessObject,
                 ...this.element.businessObject.$attrs,
             }
-            this.formData = this.convertDescriptorProperties(data)
+            this.formData = data
+            this.hasMultiInstance = this.element.businessObject.loopCharacteristics ? true : false
+        },
+        methods: {
+            changeMultiInstanceDrawer(v){
+                this.multiInstanceDrawer = v;
+            },
+            saveMultiInstance(v){
+                this.hasMultiInstance = v
+            }
         }
     }
 </script>

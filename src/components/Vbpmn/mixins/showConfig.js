@@ -14,6 +14,7 @@ export default {
         formKey: true,
         skipExpression: true,
         dueDate: true,
+        multiInstance: true,
         taskListener: true
     },
     'bpmn:ServiceTask': {
