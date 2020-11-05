@@ -1,37 +1,35 @@
 <template>
-    <div>
-        <el-drawer :visible.sync="_multiInstanceDrawer" direction="rtl">
-            <div style="padding: 10px;">
-                <el-form ref="multiInstanceForm" :model="multiInstance" label-width="80px">
-                    <el-form-item label="多实例类型">
-                        <el-select v-model="multiInstance.isSequential" clearable>
-                            <el-option
-                                    v-for="item in multiInstanceOptions"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value" />
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="循环基数" prop="loopCardinality">
-                        <el-input v-model="multiInstance.loopCardinality" clearable/>
-                    </el-form-item>
-                    <el-form-item label="集合">
-                        <el-input v-model="multiInstance.collection" clearable/>
-                    </el-form-item>
-                    <el-form-item label="元素变量">
-                        <el-input v-model="multiInstance.elementVariable" clearable/>
-                    </el-form-item>
-                    <el-form-item label="完成条件">
-                        <el-input v-model="multiInstance.completionCondition" clearable/>
-                    </el-form-item>
-                </el-form>
-                <div style="text-align:right">
-                    <el-button icon="el-icon-close" @click="_multiInstanceDrawer = false">取消</el-button>
-                    <el-button icon="el-icon-check" type="primary" @click="save">确定</el-button>
-                </div>
+    <el-drawer :visible.sync="_multiInstanceDrawer" direction="rtl">
+        <div style="padding: 10px;">
+            <el-form ref="multiInstanceForm" :model="multiInstance" label-width="80px">
+                <el-form-item label="多实例类型">
+                    <el-select v-model="multiInstance.isSequential" clearable>
+                        <el-option
+                                v-for="item in multiInstanceOptions"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value" />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="循环基数" prop="loopCardinality">
+                    <el-input v-model="multiInstance.loopCardinality" clearable/>
+                </el-form-item>
+                <el-form-item label="集合">
+                    <el-input v-model="multiInstance.collection" clearable/>
+                </el-form-item>
+                <el-form-item label="元素变量">
+                    <el-input v-model="multiInstance.elementVariable" clearable/>
+                </el-form-item>
+                <el-form-item label="完成条件">
+                    <el-input v-model="multiInstance.completionCondition" clearable/>
+                </el-form-item>
+            </el-form>
+            <div style="text-align:right">
+                <el-button icon="el-icon-close" @click="_multiInstanceDrawer = false">取消</el-button>
+                <el-button icon="el-icon-check" type="primary" @click="save">确定</el-button>
             </div>
-        </el-drawer>
-    </div>
+        </div>
+    </el-drawer>
 </template>
 
 <script>

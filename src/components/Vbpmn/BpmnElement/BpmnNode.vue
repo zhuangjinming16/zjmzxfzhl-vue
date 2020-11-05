@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-form ref="refForm" :model="formData" :rules="rules" :inline="false" label-width="75px">
+        <el-form ref="refForm" :model="formData" :rules="rules" label-width="75px">
             <el-collapse v-model="activeName" accordion>
                 <el-collapse-item name="1">
                     <template slot="title">
@@ -59,20 +59,33 @@
                     </el-form-item>
                 </el-collapse-item>
 
+                <el-collapse-item name="4">
+                    <template slot="title">
+                        <span class="el_title">监听器<i class="header-icon el-icon-info"/></span>
+                    </template>
+                    <el-form-item label="执行监听">
+                        <el-badge :value="executionListenerLength">
+                            <el-button @click="executionListenerDrawer = true">编辑</el-button>
+                        </el-badge>
+                    </el-form-item>
+                </el-collapse-item>
+
             </el-collapse>
         </el-form>
 
         <multi-instance v-if="!!showConfig.multiInstance" :element="element" :modeler="modeler" @changeMultiInstanceDrawer="changeMultiInstanceDrawer" @saveMultiInstance="saveMultiInstance" :multiInstanceDrawer="multiInstanceDrawer"></multi-instance>
+        <execution-listener :element="element" :modeler="modeler" @changeExecutionListenerDrawer="changeExecutionListenerDrawer" @saveExecutionListener="saveExecutionListener" :executionListenerDrawer="executionListenerDrawer"></execution-listener>
     </div>
 </template>
 
 <script>
     import mixinPanel from '../mixins/mixinPanel'
     import MultiInstance from "../properties/multiInstance";
+    import ExecutionListener from "../properties/executionListener";
 
     export default {
         name: 'BpmnNode',
-        components: {MultiInstance},
+        components: {ExecutionListener, MultiInstance},
         mixins: [mixinPanel],
         props: {
             taskCategory: {
@@ -89,7 +102,9 @@
                     name: [{required: true, message: '该项不能为空', trigger: 'change'}]
                 },
                 multiInstanceDrawer: false,
-                hasMultiInstance: false
+                hasMultiInstance: false,
+                executionListenerDrawer: false,
+                executionListenerLength: 0
             }
         },
         watch: {
@@ -163,6 +178,8 @@
             }
             this.formData = data
             this.hasMultiInstance = this.element.businessObject.loopCharacteristics ? true : false
+            this.executionListenerLength = this.element.businessObject.extensionElements?.values
+                .filter(item => item.$type === (this.descriptorPrefix + 'ExecutionListener')).length ?? 0
         },
         methods: {
             changeMultiInstanceDrawer(v){
@@ -170,6 +187,12 @@
             },
             saveMultiInstance(v){
                 this.hasMultiInstance = v
+            },
+            changeExecutionListenerDrawer(v){
+                this.executionListenerDrawer = v;
+            },
+            saveExecutionListener(v){
+                this.executionListenerLength = v
             }
         }
     }

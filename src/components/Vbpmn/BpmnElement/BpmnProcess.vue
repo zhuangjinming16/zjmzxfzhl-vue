@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-form ref="refForm" :model="formData" :rules="rules" :inline="true" label-width="75px">
+        <el-form ref="refForm" :model="formData" :rules="rules" label-width="75px">
             <el-collapse v-model="activeName" accordion>
                 <el-collapse-item name="1">
                     <template slot="title">
@@ -15,7 +15,6 @@
                     </el-form-item>
 
                     <el-form-item label="流程分类" prop="processCategory">
-                        <!--<el-input v-model="formData.processCategory" clearable/>-->
                         <el-select v-model="formData.processCategory">
                             <el-option v-for="item in this.processCategory" :label="item.name"
                                        :value="item.id"></el-option>
