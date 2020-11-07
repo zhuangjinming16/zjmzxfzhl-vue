@@ -1,5 +1,5 @@
 <template>
-    <el-drawer :title="title" :visible.sync="_executionListenerDrawer" direction="rtl" @open="init">
+    <el-drawer :title="title" :visible.sync="_listenerDrawer" direction="rtl" @open="init">
         <div style="padding: 10px;">
             <el-table ref="listenersRef" :data="listeners" border fit highlight-current-row @row-click="editListener">
                 <el-table-column prop="eventType" label="事件" align="center"/>
@@ -16,18 +16,19 @@
             </el-table>
             <div v-if="showForm">
                 <el-divider></el-divider>
-                <el-form :model="executionListener" label-width="80px">
+                <el-form :model="listener" label-width="80px">
                     <el-form-item label="事件类型">
-                        <el-select v-model="executionListener.eventType" placeholder="请选择">
+                        <el-select v-model="listener.eventType" placeholder="请选择">
                             <el-option
                                     v-for="item in eventTypes"
                                     :key="item.value"
                                     :label="item.label"
                                     :value="item.value"/>
-                        </el-select>
+                            </el-select>
+
                     </el-form-item>
                     <el-form-item label="监听类型">
-                        <el-select v-model="executionListener.listenerType" placeholder="请选择">
+                        <el-select v-model="listener.listenerType" placeholder="请选择">
                             <el-option
                                     v-for="item in listenerTypes"
                                     :key="item.value"
@@ -36,7 +37,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="值" prop="value">
-                        <el-input v-model="executionListener.value"/>
+                        <el-input v-model="listener.value"/>
                     </el-form-item>
                     <el-form-item label="参数">
                         <el-badge :value="listenerParams.length">
@@ -48,7 +49,7 @@
         </div>
         <div style="text-align:right;padding: 10px;">
             <el-button icon="el-icon-plus" type="primary" @click="addListener">添加</el-button>
-            <el-button icon="el-icon-close" @click="_executionListenerDrawer = false">取消</el-button>
+            <el-button icon="el-icon-close" @click="_listenerDrawer = false">取消</el-button>
             <el-button icon="el-icon-check" type="primary" @click="save">确定</el-button>
         </div>
 
@@ -64,23 +65,27 @@
     export default {
         components: {ListenerParam},
         props: {
-            executionListenerDrawer: {
+            listenerDrawer: {
                 type: Boolean,
                 default: false
             },
             title: {
                 type: String,
                 default: ''
+            },
+            type: {
+                type: String,
+                default: 'Execution'
             }
         },
         mixins: [mixinPanel],
         computed: {
-            _executionListenerDrawer: {
+            _listenerDrawer: {
                 get() {
-                    return this.executionListenerDrawer
+                    return this.listenerDrawer
                 },
                 set(v) {
-                    this.$emit("changeExecutionListenerDrawer", v)
+                    this.$emit("changeListenerDrawer", v)
                 }
             }
         },
@@ -92,17 +97,24 @@
                     expression: '表达式',
                     delegateExpression: '代理表达式'
                 },
-                eventTypes: [
+                excutionEventTypes: [
                     {value: 'start', label: 'start'},
                     {value: 'take', label: 'take'},
                     {value: 'end', label: 'end'}
                 ],
+                taskEventTypes: [
+                    { value: 'create', label: 'create' },
+                    { value: 'assignment', label: 'assignment' },
+                    { value: 'complete', label: 'complete' },
+                    { value: 'delete', label: 'delete' }
+                ],
+                eventTypes: this.type === 'Execution' ? this.excutionEventTypes : this.taskEventTypes,
                 listenerTypes: [
                     {value: 'class', label: '类'},
                     {value: 'expression', label: '表达式'},
                     {value: 'delegateExpression', label: '代理表达式'}
                 ],
-                executionListener: {
+                listener: {
                     id: '',
                     eventType: 'start',
                     listenerType: 'class',
@@ -118,15 +130,16 @@
         },
         methods: {
             init(){
+                this.eventTypes = this.type === 'Execution' ? this.excutionEventTypes : this.taskEventTypes,
                 this.showForm = false
-                this.executionListener = {
+                this.listener = {
                     id: '',
                     eventType: 'start',
                     listenerType: 'class',
                     value: ''
                 }
                 this.listeners = this.element.businessObject.extensionElements?.values
-                    .filter(item => item.$type === (this.descriptorPrefix + 'ExecutionListener'))
+                    .filter(item => item.$type === (this.descriptorPrefix + this.type + 'Listener'))
                     .map(item => {
                         let type
                         if ('class' in item) type = 'class'
@@ -159,12 +172,12 @@
                 this.showForm = true
                 let val = {
                     id: randomString(),
-                    eventType: 'start',
-                    listenerType: 'class',
+                    eventType: undefined,
+                    listenerType: undefined,
                     value: ''
                 }
                 this.listeners.push(val)
-                this.executionListener = val
+                this.listener = val
                 this.$refs['listenersRef'].setCurrentRow(val, true)
                 this.listenerParams = []
             },
@@ -176,8 +189,8 @@
             },
             editListener(row) {
                 this.showForm = true
-                this.executionListener = row
-                let index = this.listeners.indexOf(this.executionListener)
+                this.listener = row
+                let index = this.listeners.indexOf(this.listener)
                 this.listenerParams = this.listeners[index]?.params ?? []
             },
             editListenerParams(){
@@ -187,7 +200,7 @@
                 this.listenerParamsDrawer = v;
             },
             saveListenerParams(v){
-                let index = this.listeners.indexOf(this.executionListener)
+                let index = this.listeners.indexOf(this.listener)
                 this.listeners[index].params = v
                 this.listenerParams = v
             },
@@ -196,11 +209,11 @@
                 if (!extensionElements) {
                     extensionElements = this.modeler.get('moddle').create('bpmn:ExtensionElements')
                 }
-                extensionElements.values = extensionElements.values?.filter(item => item.$type !== (this.descriptorPrefix + 'ExecutionListener')) ?? []
+                extensionElements.values = extensionElements.values?.filter(item => item.$type !== (this.descriptorPrefix + this.type + 'Listener')) ?? []
                 this.listeners.forEach(item => {
-                    const executionListener = this.modeler.get('moddle').create(this.descriptorPrefix + 'ExecutionListener')
-                    executionListener['event'] = item.eventType
-                    executionListener[item.listenerType] = item.value
+                    const listener = this.modeler.get('moddle').create(this.descriptorPrefix + this.type + 'Listener')
+                    listener['event'] = item.eventType
+                    listener[item.listenerType] = item.value
                     if (item.params && item.params.length) {
                         item.params.forEach(field => {
                             const fieldElement = this.modeler.get('moddle').create(this.descriptorPrefix + 'Field')
@@ -211,14 +224,14 @@
                             // fieldElement[field.type] = valueElement
                             fieldElement.set(field.paramType, valueElement)
                             // fieldElement.push(valueElement)
-                            executionListener.get('fields').push(fieldElement)
+                            listener.get('fields').push(fieldElement)
                         })
                     }
-                    extensionElements.get('values').push(executionListener)
+                    extensionElements.get('values').push(listener)
                 })
                 this.updateProperties({extensionElements: extensionElements.get('values')?.length == 0 ? undefined : extensionElements})
-                this._executionListenerDrawer = false
-                this.$emit("saveExecutionListener", this.listeners?.length)
+                this._listenerDrawer = false
+                this.$emit("saveListener", this.listeners?.length)
             }
         }
     }

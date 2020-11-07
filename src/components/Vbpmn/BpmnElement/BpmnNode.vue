@@ -68,24 +68,30 @@
                             <el-button @click="executionListenerDrawer = true">编辑</el-button>
                         </el-badge>
                     </el-form-item>
+                    <el-form-item label="任务监听">
+                        <el-badge :value="taskListenerLength">
+                            <el-button @click="taskListenerDrawer = true">编辑</el-button>
+                        </el-badge>
+                    </el-form-item>
                 </el-collapse-item>
 
             </el-collapse>
         </el-form>
 
         <multi-instance title="多实例" v-if="!!showConfig.multiInstance" :element="element" :modeler="modeler" @changeMultiInstanceDrawer="changeMultiInstanceDrawer" @saveMultiInstance="saveMultiInstance" :multiInstanceDrawer="multiInstanceDrawer"></multi-instance>
-        <execution-listener title="执行监听" :element="element" :modeler="modeler" @changeExecutionListenerDrawer="changeExecutionListenerDrawer" @saveExecutionListener="saveExecutionListener" :executionListenerDrawer="executionListenerDrawer"></execution-listener>
+        <listener title="执行监听" type="Execution" :element="element" :modeler="modeler" @changeListenerDrawer="changeExecutionListenerDrawer" @saveListener="saveExecutionListener" :listenerDrawer="executionListenerDrawer"></listener>
+        <listener title="任务监听" type="Task" :element="element" :modeler="modeler" @changeListenerDrawer="changeTaskListenerDrawer" @saveListener="saveTaskListener" :listenerDrawer="taskListenerDrawer"></listener>
     </div>
 </template>
 
 <script>
     import mixinPanel from '../mixins/mixinPanel'
     import MultiInstance from "../properties/multiInstance";
-    import ExecutionListener from "../properties/executionListener";
+    import listener from "../properties/listener";
 
     export default {
         name: 'BpmnNode',
-        components: {ExecutionListener, MultiInstance},
+        components: {listener, MultiInstance},
         mixins: [mixinPanel],
         props: {
             taskCategory: {
@@ -104,7 +110,9 @@
                 multiInstanceDrawer: false,
                 hasMultiInstance: false,
                 executionListenerDrawer: false,
-                executionListenerLength: 0
+                executionListenerLength: 0,
+                taskListenerDrawer: false,
+                taskListenerLength: 0
             }
         },
         watch: {
@@ -180,6 +188,8 @@
             this.hasMultiInstance = this.element.businessObject.loopCharacteristics ? true : false
             this.executionListenerLength = this.element.businessObject.extensionElements?.values
                 .filter(item => item.$type === (this.descriptorPrefix + 'ExecutionListener')).length ?? 0
+            this.taskListenerLength = this.element.businessObject.extensionElements?.values
+                .filter(item => item.$type === (this.descriptorPrefix + 'TaskListener')).length ?? 0
         },
         methods: {
             changeMultiInstanceDrawer(v){
@@ -193,6 +203,12 @@
             },
             saveExecutionListener(v){
                 this.executionListenerLength = v
+            },
+            changeTaskListenerDrawer(v){
+                this.taskListenerDrawer = v;
+            },
+            saveTaskListener(v){
+                this.taskListenerLength = v
             }
         }
     }
