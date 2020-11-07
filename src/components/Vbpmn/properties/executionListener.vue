@@ -2,7 +2,7 @@
     <el-drawer :visible.sync="_executionListenerDrawer" direction="rtl">
 
         <div style="padding: 10px;">
-            <el-table :data="listeners" border fit highlight-current-row>
+            <el-table ref="listenersRef" :data="listeners" border fit highlight-current-row @row-click="editListener">
                 <el-table-column prop="eventType" label="事件" align="center"/>
                 <el-table-column prop="listenerType" label="类型" align="center">
                     <template slot-scope="scope">
@@ -11,35 +11,38 @@
                 </el-table-column>
                 <el-table-column label="操作" align="center">
                     <template slot-scope="{row}">
-                        <i class="el-icon-edit el-icon--center" style="cursor: pointer;" @click="editListener(row)"></i>
-                        <i class="el-icon-delete el-icon--center" style="cursor: pointer;" @click="deleteListener(row)"></i>
+                        <!--<i class="el-icon-edit el-icon&#45;&#45;center" style="cursor: pointer;" @click="editListener(row)"></i>-->
+                        <!--<i class="el-icon-delete el-icon&#45;&#45;center" style="cursor: pointer;" @click.native.stop="deleteListener(row)"></i>-->
+                        <el-button icon="el-icon-delete" @click.native.stop="deleteListener(row)"></el-button>
                     </template>
                 </el-table-column>
             </el-table>
-
-            <el-form v-if="showForm" :model="executionListener" label-width="80px" style="padding: 10px;">
-                <el-form-item label="事件类型">
-                    <el-select v-model="executionListener.eventType" placeholder="请选择">
-                        <el-option
-                                v-for="item in eventTypes"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value"/>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="监听类型">
-                    <el-select v-model="executionListener.listenerType" placeholder="请选择">
-                        <el-option
-                                v-for="item in listenerTypes"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value"/>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="值" prop="value">
-                    <el-input v-model="executionListener.value"/>
-                </el-form-item>
-            </el-form>
+            <div v-if="showForm">
+                <el-divider style="margin: 10px 0"></el-divider>
+                <el-form :model="executionListener" label-width="80px" style="padding: 10px;">
+                    <el-form-item label="事件类型">
+                        <el-select v-model="executionListener.eventType" placeholder="请选择">
+                            <el-option
+                                    v-for="item in eventTypes"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value"/>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="监听类型">
+                        <el-select v-model="executionListener.listenerType" placeholder="请选择">
+                            <el-option
+                                    v-for="item in listenerTypes"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value"/>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="值" prop="value">
+                        <el-input v-model="executionListener.value"/>
+                    </el-form-item>
+                </el-form>
+            </div>
         </div>
         <div style="text-align:right;padding: 10px;">
             <el-button icon="el-icon-plus" type="primary" @click="addListener">添加</el-button>
@@ -66,13 +69,7 @@
                     return this.executionListenerDrawer
                 },
                 set(v) {
-                    this.showForm = false
-                    this.executionListener = {
-                        id: '',
-                        eventType: 'start',
-                        listenerType: 'class',
-                        value: ''
-                    },
+                    this.init()
                     this.$emit("changeExecutionListenerDrawer", v)
                 }
             }
@@ -105,31 +102,41 @@
             }
         },
         mounted() {
-            this.listeners = this.element.businessObject.extensionElements?.values
-                .filter(item => item.$type === (this.descriptorPrefix + 'ExecutionListener'))
-                .map(item => {
-                    let type
-                    if ('class' in item) type = 'class'
-                    if ('expression' in item) type = 'expression'
-                    if ('delegateExpression' in item) type = 'delegateExpression'
-                    return {
-                        eventType: item.event,
-                        listenerType: type,
-                        value: item[type],
-                        params: item.fields?.map(field => {
-                            let fieldType
-                            if ('stringValue' in field) fieldType = 'stringValue'
-                            if ('expression' in field) fieldType = 'expression'
-                            return {
-                                name: field.name,
-                                type: fieldType,
-                                value: field[fieldType]
-                            }
-                        }) ?? []
-                    }
-                }) ?? []
+            this.init()
         },
         methods: {
+            init(){
+                this.showForm = false
+                this.executionListener = {
+                    id: '',
+                    eventType: 'start',
+                    listenerType: 'class',
+                    value: ''
+                }
+                this.listeners = this.element.businessObject.extensionElements?.values
+                    .filter(item => item.$type === (this.descriptorPrefix + 'ExecutionListener'))
+                    .map(item => {
+                        let type
+                        if ('class' in item) type = 'class'
+                        if ('expression' in item) type = 'expression'
+                        if ('delegateExpression' in item) type = 'delegateExpression'
+                        return {
+                            eventType: item.event,
+                            listenerType: type,
+                            value: item[type],
+                            params: item.fields?.map(field => {
+                                let fieldType
+                                if ('stringValue' in field) fieldType = 'stringValue'
+                                if ('expression' in field) fieldType = 'expression'
+                                return {
+                                    name: field.name,
+                                    type: fieldType,
+                                    value: field[fieldType]
+                                }
+                            }) ?? []
+                        }
+                    }) ?? []
+            },
             randomString(len) {
                 len = len || 32
                 const $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678'
@@ -151,6 +158,7 @@
                 }
                 this.listeners.push(val)
                 this.executionListener = val
+                this.$refs['listenersRef'].setCurrentRow(val, true)
             },
             deleteListener(row) {
                 let index = this.listeners.indexOf(row)
