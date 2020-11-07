@@ -15,6 +15,10 @@
   display: none;
 }
 
+.el-drawer__header span:focus {
+  outline: 0!important;
+}
+
 .cell {
   .el-tag {
     margin-right: 0px;

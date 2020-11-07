@@ -1,6 +1,5 @@
 <template>
-    <el-drawer :visible.sync="_executionListenerDrawer" direction="rtl">
-
+    <el-drawer :title="title" :visible.sync="_executionListenerDrawer" direction="rtl" @open="init">
         <div style="padding: 10px;">
             <el-table ref="listenersRef" :data="listeners" border fit highlight-current-row @row-click="editListener">
                 <el-table-column prop="eventType" label="事件" align="center"/>
@@ -11,15 +10,13 @@
                 </el-table-column>
                 <el-table-column label="操作" align="center">
                     <template slot-scope="{row}">
-                        <!--<i class="el-icon-edit el-icon&#45;&#45;center" style="cursor: pointer;" @click="editListener(row)"></i>-->
-                        <!--<i class="el-icon-delete el-icon&#45;&#45;center" style="cursor: pointer;" @click.native.stop="deleteListener(row)"></i>-->
                         <el-button icon="el-icon-delete" @click.native.stop="deleteListener(row)"></el-button>
                     </template>
                 </el-table-column>
             </el-table>
             <div v-if="showForm">
-                <el-divider style="margin: 10px 0"></el-divider>
-                <el-form :model="executionListener" label-width="80px" style="padding: 10px;">
+                <el-divider></el-divider>
+                <el-form :model="executionListener" label-width="80px">
                     <el-form-item label="事件类型">
                         <el-select v-model="executionListener.eventType" placeholder="请选择">
                             <el-option
@@ -41,6 +38,11 @@
                     <el-form-item label="值" prop="value">
                         <el-input v-model="executionListener.value"/>
                     </el-form-item>
+                    <el-form-item label="参数">
+                        <el-badge :value="listenerParams.length">
+                            <el-button @click="editListenerParams">编辑</el-button>
+                        </el-badge>
+                    </el-form-item>
                 </el-form>
             </div>
         </div>
@@ -49,17 +51,26 @@
             <el-button icon="el-icon-close" @click="_executionListenerDrawer = false">取消</el-button>
             <el-button icon="el-icon-check" type="primary" @click="save">确定</el-button>
         </div>
+
+        <listener-param title="参数维护" @changeListenerParamsDrawer="changeListenerParamsDrawer" @saveListenerParams="saveListenerParams" :listenerParamsDrawer="listenerParamsDrawer" :listenerParams="listenerParams"></listener-param>
     </el-drawer>
 </template>
 
 <script>
     import mixinPanel from '../mixins/mixinPanel'
+    import ListenerParam from "./listenerParam"
+    import {randomString} from '@/utils/util'
 
     export default {
+        components: {ListenerParam},
         props: {
             executionListenerDrawer: {
                 type: Boolean,
                 default: false
+            },
+            title: {
+                type: String,
+                default: ''
             }
         },
         mixins: [mixinPanel],
@@ -69,7 +80,6 @@
                     return this.executionListenerDrawer
                 },
                 set(v) {
-                    this.init()
                     this.$emit("changeExecutionListenerDrawer", v)
                 }
             }
@@ -98,7 +108,9 @@
                     listenerType: 'class',
                     value: ''
                 },
-                showForm: false
+                showForm: false,
+                listenerParamsDrawer: false,
+                listenerParams: []
             }
         },
         mounted() {
@@ -125,33 +137,28 @@
                             listenerType: type,
                             value: item[type],
                             params: item.fields?.map(field => {
-                                let fieldType
-                                if ('stringValue' in field) fieldType = 'stringValue'
-                                if ('expression' in field) fieldType = 'expression'
+                                let fieldType,value
+                                if ('string' in field) {
+                                    fieldType = 'string'
+                                    value = field.string.body
+                                }
+                                if ('expression' in field) {
+                                    fieldType = 'expression'
+                                    value = field.expression.body
+                                }
                                 return {
                                     name: field.name,
-                                    type: fieldType,
-                                    value: field[fieldType]
+                                    paramType: fieldType,
+                                    value: value
                                 }
                             }) ?? []
                         }
                     }) ?? []
             },
-            randomString(len) {
-                len = len || 32
-                const $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678'
-                /** **默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1****/
-                const maxPos = $chars.length
-                let pwd = ''
-                for (let i = 0; i < len; i++) {
-                    pwd += $chars.charAt(Math.floor(Math.random() * maxPos))
-                }
-                return pwd
-            },
             addListener() {
                 this.showForm = true
                 let val = {
-                    id: this.randomString(),
+                    id: randomString(),
                     eventType: 'start',
                     listenerType: 'class',
                     value: ''
@@ -159,15 +166,30 @@
                 this.listeners.push(val)
                 this.executionListener = val
                 this.$refs['listenersRef'].setCurrentRow(val, true)
+                this.listenerParams = []
             },
             deleteListener(row) {
                 let index = this.listeners.indexOf(row)
                 this.listeners.splice(index, 1)
                 this.showForm = false
+                this.listenerParams = []
             },
             editListener(row) {
                 this.showForm = true
                 this.executionListener = row
+                let index = this.listeners.indexOf(this.executionListener)
+                this.listenerParams = this.listeners[index]?.params ?? []
+            },
+            editListenerParams(){
+                this.listenerParamsDrawer = true
+            },
+            changeListenerParamsDrawer(v){
+                this.listenerParamsDrawer = v;
+            },
+            saveListenerParams(v){
+                let index = this.listeners.indexOf(this.executionListener)
+                this.listeners[index].params = v
+                this.listenerParams = v
             },
             save() {
                 let extensionElements = this.element.businessObject.get('extensionElements')
@@ -181,12 +203,14 @@
                     executionListener[item.listenerType] = item.value
                     if (item.params && item.params.length) {
                         item.params.forEach(field => {
-                            const fieldElement = this.modeler.get('moddle').create('flowable:Field')
+                            const fieldElement = this.modeler.get('moddle').create(this.descriptorPrefix + 'Field')
                             fieldElement['name'] = field.name
-                            fieldElement[field.type] = field.value
+                            // fieldElement[field.type] = field.value
                             // 注意：flowable.json 中定义的string和expression类为小写，不然会和原生的String类冲突，此处为hack
-                            // const valueElement = this.modeler.get('moddle').create(`flowable:${field.type}`, { body: `<![CDATA[${field.value}]]>` })
+                            const valueElement = this.modeler.get('moddle').create(this.descriptorPrefix + field.paramType, { body: field.value })
                             // fieldElement[field.type] = valueElement
+                            fieldElement.set(field.paramType, valueElement)
+                            // fieldElement.push(valueElement)
                             executionListener.get('fields').push(fieldElement)
                         })
                     }

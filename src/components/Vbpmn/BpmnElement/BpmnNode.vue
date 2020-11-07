@@ -73,8 +73,8 @@
             </el-collapse>
         </el-form>
 
-        <multi-instance v-if="!!showConfig.multiInstance" :element="element" :modeler="modeler" @changeMultiInstanceDrawer="changeMultiInstanceDrawer" @saveMultiInstance="saveMultiInstance" :multiInstanceDrawer="multiInstanceDrawer"></multi-instance>
-        <execution-listener :element="element" :modeler="modeler" @changeExecutionListenerDrawer="changeExecutionListenerDrawer" @saveExecutionListener="saveExecutionListener" :executionListenerDrawer="executionListenerDrawer"></execution-listener>
+        <multi-instance title="多实例" v-if="!!showConfig.multiInstance" :element="element" :modeler="modeler" @changeMultiInstanceDrawer="changeMultiInstanceDrawer" @saveMultiInstance="saveMultiInstance" :multiInstanceDrawer="multiInstanceDrawer"></multi-instance>
+        <execution-listener title="执行监听" :element="element" :modeler="modeler" @changeExecutionListenerDrawer="changeExecutionListenerDrawer" @saveExecutionListener="saveExecutionListener" :executionListenerDrawer="executionListenerDrawer"></execution-listener>
     </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-    <el-drawer :visible.sync="_multiInstanceDrawer" direction="rtl">
+    <el-drawer :title="title" :visible.sync="_multiInstanceDrawer" direction="rtl">
         <div style="padding: 10px;">
             <el-form ref="multiInstanceForm" :model="multiInstance" label-width="80px">
                 <el-form-item label="多实例类型">
@@ -40,6 +40,10 @@
             multiInstanceDrawer: {
                 type: Boolean,
                 default: false
+            },
+            title: {
+                type: String,
+                default: ''
             }
         },
         mixins: [mixinPanel],
