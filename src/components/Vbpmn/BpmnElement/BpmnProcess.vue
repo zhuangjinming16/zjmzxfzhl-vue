@@ -21,6 +21,10 @@
                         </el-select>
                     </el-form-item>
 
+                    <el-form-item label="描述">
+                        <el-input v-model="formData.documentation" :rows="3" type="textarea" clearable/>
+                    </el-form-item>
+
                 </el-collapse-item>
                 <el-collapse-item name="2">
                     <template slot="title">
@@ -41,7 +45,6 @@
 
 <script>
     import mixinPanel from '../mixins/mixinPanel'
-    // import mixinExecutionListener from '../../common/mixinExecutionListener'
 
     export default {
         name: 'BpmnProcess',
@@ -82,12 +85,11 @@
                 ...this.element.businessObject,
                 ...this.element.businessObject.$attrs,
             }
-            this.formData = this.convertDescriptorProperties(data)
             const targetNamespace = this.element.businessObject.$parent.targetNamespace
-            this.formData = {
-                ...data,
-                ...{processCategory: targetNamespace}
-            }
+            data.processCategory = targetNamespace
+            data.documentation = this.getDocumentation()
+
+            this.formData = data
         }
     }
 </script>

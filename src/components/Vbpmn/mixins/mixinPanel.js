@@ -21,6 +21,16 @@ export default {
         },
         'formData.name': function (val) {
             this.updateProperty('name', val)
+        },
+        'formData.documentation': function (val) {
+            if (val) {
+                const documentation = this.modeler.get('moddle').create('bpmn:Documentation', {text: val})
+                const newObjectList = []
+                newObjectList.push(documentation)
+                this.updateProperties({documentation : newObjectList})
+            } else {
+                this.updateProperties({documentation : undefined})
+            }
         }
     },
     methods: {
@@ -39,6 +49,11 @@ export default {
             properties[propertyName] = val
             const modeling = this.modeler.get('modeling')
             modeling.updateProperties(this.element, properties)
+        },
+        getDocumentation(){
+            const documentations = this.element.businessObject?.documentation
+            const text = (documentations && documentations.length > 0) ? documentations[0].text : ''
+            return text
         },
         convertDescriptorProperties(data){
             // 移除 flowable: 或 camunda: 等前缀开头的变量，格式化数组

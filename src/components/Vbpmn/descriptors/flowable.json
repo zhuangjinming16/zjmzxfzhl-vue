@@ -403,6 +403,11 @@
       ],
       "properties": [
         {
+          "name": "category",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
           "name": "candidateGroups",
           "isAttr": true,
           "type": "String"

@@ -25,6 +25,10 @@
                         </el-select>
                     </el-form-item>
 
+                    <el-form-item label="描述">
+                        <el-input v-model="formData.documentation" :rows="3" type="textarea" clearable/>
+                    </el-form-item>
+
                     <el-form-item label="异步" prop="async">
                         <el-switch v-model="formData.async"></el-switch>
                     </el-form-item>
@@ -130,7 +134,7 @@
             },
             'formData.conditionExpression': function (val) {
                 if (val) {
-                    const newCondition = this.modeler.get('moddle').create('bpmn:FormalExpression', {body: `<![CDATA[${val}]]>`})
+                    const newCondition = this.modeler.get('moddle').create('bpmn:FormalExpression', {body: val})
                     this.updateProperties({conditionExpression: newCondition})
                 } else {
                     this.updateProperties({conditionExpression: null})
@@ -184,6 +188,7 @@
                 ...this.element.businessObject,
                 ...this.element.businessObject.$attrs,
             }
+            data.documentation = this.getDocumentation()
             this.formData = data
             this.hasMultiInstance = this.element.businessObject.loopCharacteristics ? true : false
             this.executionListenerLength = this.element.businessObject.extensionElements?.values
