@@ -1,5 +1,5 @@
 <template>
-    <el-drawer :title="title" :visible.sync="_multiInstanceDrawer" direction="rtl">
+    <el-drawer :title="title" :visible.sync="_multiInstanceDrawer" direction="rtl" @open="init">
         <div style="padding: 10px;">
             <el-form ref="multiInstanceForm" :model="multiInstance" label-width="80px">
                 <el-form-item label="多实例类型">
@@ -83,18 +83,21 @@
             }
         },
         mounted() {
-            const loopCharacteristics = this.element.businessObject?.loopCharacteristics
-            const isSequential = loopCharacteristics === undefined ? undefined : (loopCharacteristics.isSequential ?? false)
-            const data = {}
-            data.isSequential = isSequential
-            data.collection = loopCharacteristics?.collection
-            data.elementVariable = loopCharacteristics?.elementVariable
-            data.loopCardinality = loopCharacteristics?.loopCardinality?.body
-            data.completionCondition = loopCharacteristics?.completionCondition?.body
-
-            this.multiInstance = data
+            this.init()
         },
         methods: {
+            init() {
+                const loopCharacteristics = this.element.businessObject?.loopCharacteristics
+                const isSequential = loopCharacteristics === undefined ? undefined : (loopCharacteristics.isSequential ?? false)
+                const data = {}
+                data.isSequential = isSequential
+                data.collection = loopCharacteristics?.collection
+                data.elementVariable = loopCharacteristics?.elementVariable
+                data.loopCardinality = loopCharacteristics?.loopCardinality?.body
+                data.completionCondition = loopCharacteristics?.completionCondition?.body
+
+                this.multiInstance = data
+            },
             save() {
                 let hasMultiInstance = false
                 if(this.multiInstance.isSequential === undefined || this.multiInstance.isSequential === ''){
