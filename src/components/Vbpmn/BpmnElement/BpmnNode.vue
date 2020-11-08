@@ -14,22 +14,22 @@
                         <el-input v-model="formData.name" clearable/>
                     </el-form-item>
 
-                    <el-form-item v-if="!!showConfig.initiator" label="发起人" prop="initiator">
-                        <el-input v-model="formData.initiator" clearable/>
+                    <el-form-item label="描述">
+                        <el-input v-model="formData.documentation" :rows="3" type="textarea" clearable/>
                     </el-form-item>
 
-                    <el-form-item label="任务分类" prop="taskCategory">
+                    <el-form-item v-if="!!showConfig.taskCategory" label="任务分类" prop="taskCategory">
                         <el-select v-model="formData.category">
                             <el-option v-for="item in this.taskCategory" :label="item.name"
                                        :value="item.id"></el-option>
                         </el-select>
                     </el-form-item>
 
-                    <el-form-item label="描述">
-                        <el-input v-model="formData.documentation" :rows="3" type="textarea" clearable/>
+                    <el-form-item v-if="!!showConfig.conditionExpression" label="流转条件" prop="conditionExpression">
+                        <el-input v-model="formData.conditionExpression" clearable/>
                     </el-form-item>
 
-                    <el-form-item label="异步" prop="async">
+                    <el-form-item v-if="!!showConfig.async" label="异步" prop="async">
                         <el-switch v-model="formData.async"></el-switch>
                     </el-form-item>
 
@@ -40,25 +40,28 @@
                     </el-form-item>
 
                 </el-collapse-item>
-                <el-collapse-item name="2">
+                <el-collapse-item v-if="!!showConfig.candidate" name="2">
                     <template slot="title">
                         <span class="el_title">候选配置<i class="header-icon el-icon-info"/></span>
                     </template>
-                    <el-form-item label="执行人">
+                    <el-form-item v-if="!!showConfig.initiator" label="创建者" prop="initiator">
+                        <el-input v-model="formData.initiator" clearable/>
+                    </el-form-item>
+                    <el-form-item v-if="!!showConfig.assignee" label="执行人">
                         <el-input v-model="formData.assignee" clearable/>
                     </el-form-item>
-                    <el-form-item label="候选用户">
+                    <el-form-item v-if="!!showConfig.candidateUsers" label="候选用户">
                         <el-input v-model="formData.candidateUsers" clearable/>
                     </el-form-item>
-                    <el-form-item label="候选组">
+                    <el-form-item v-if="!!showConfig.candidateGroups" label="候选组">
                         <el-input v-model="formData.candidateGroups" clearable/>
                     </el-form-item>
                 </el-collapse-item>
-                <el-collapse-item name="3">
+                <el-collapse-item v-if="!!showConfig.form" name="3">
                     <template slot="title">
                         <span class="el_title">表单配置<i class="header-icon el-icon-info"/></span>
                     </template>
-                    <el-form-item label="表单Key">
+                    <el-form-item v-if="!!showConfig.formKey" label="表单Key">
                         <el-input v-model="formData.formKey" clearable/>
                     </el-form-item>
                 </el-collapse-item>
@@ -72,7 +75,7 @@
                             <el-button @click="executionListenerDrawer = true">编辑</el-button>
                         </el-badge>
                     </el-form-item>
-                    <el-form-item label="任务监听">
+                    <el-form-item v-if="!!showConfig.taskListener" label="任务监听">
                         <el-badge :value="taskListenerLength">
                             <el-button @click="taskListenerDrawer = true">编辑</el-button>
                         </el-badge>
@@ -189,6 +192,7 @@
                 ...this.element.businessObject.$attrs,
             }
             data.documentation = this.getDocumentation()
+            data.conditionExpression = this.element.businessObject.conditionExpression?.body
             this.formData = data
             this.hasMultiInstance = this.element.businessObject.loopCharacteristics ? true : false
             this.executionListenerLength = this.element.businessObject.extensionElements?.values

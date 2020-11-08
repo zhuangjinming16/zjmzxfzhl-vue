@@ -7,11 +7,15 @@
                         <span class="el_title">基本设置<i class="header-icon el-icon-info"/></span>
                     </template>
 
-                    <el-form-item label="流程ID" prop="id">
+                    <el-form-item label="流程主键" prop="id">
                         <el-input v-model="formData.id" clearable/>
                     </el-form-item>
-                    <el-form-item label="名称" prop="name">
+                    <el-form-item label="流程名称" prop="name">
                         <el-input v-model="formData.name" clearable/>
+                    </el-form-item>
+
+                    <el-form-item label="流程描述">
+                        <el-input v-model="formData.documentation" :rows="3" type="textarea" clearable/>
                     </el-form-item>
 
                     <el-form-item label="流程分类" prop="processCategory">
@@ -21,33 +25,45 @@
                         </el-select>
                     </el-form-item>
 
-                    <el-form-item label="描述">
-                        <el-input v-model="formData.documentation" :rows="3" type="textarea" clearable/>
-                    </el-form-item>
-
                 </el-collapse-item>
                 <el-collapse-item name="2">
                     <template slot="title">
                         <span class="el_title">候选配置<i class="header-icon el-icon-info"/></span>
                     </template>
-                    <el-form-item label="候选用户">
+                    <el-form-item label="可发起者">
                         <el-input v-model="formData.candidateStarterUsers" clearable/>
                     </el-form-item>
-                    <el-form-item label="候选组">
+                    <el-form-item label="可发起组">
                         <el-input v-model="formData.candidateStarterGroups" clearable/>
                     </el-form-item>
                 </el-collapse-item>
+
+                <el-collapse-item name="3">
+                    <template slot="title">
+                        <span class="el_title">监听器<i class="header-icon el-icon-info"/></span>
+                    </template>
+                    <el-form-item label="执行监听">
+                        <el-badge :value="executionListenerLength">
+                            <el-button @click="executionListenerDrawer = true">编辑</el-button>
+                        </el-badge>
+                    </el-form-item>
+                </el-collapse-item>
             </el-collapse>
+
         </el-form>
+
+        <listener title="执行监听" type="Execution" :element="element" :modeler="modeler" @changeListenerDrawer="changeExecutionListenerDrawer" @saveListener="saveExecutionListener" :listenerDrawer="executionListenerDrawer"></listener>
 
     </div>
 </template>
 
 <script>
     import mixinPanel from '../mixins/mixinPanel'
+    import listener from "../properties/listener";
 
     export default {
         name: 'BpmnProcess',
+        components: {listener},
         mixins: [mixinPanel],
         props: {
             processCategory: {
@@ -62,10 +78,11 @@
                 rules: {
                     id: [{required: true, message: '该项不能为空', trigger: 'change'}],
                     name: [{required: true, message: '该项不能为空', trigger: 'change'}]
-                }
+                },
+                executionListenerDrawer: false,
+                executionListenerLength: 0,
             }
         },
-        computed: {},
         watch: {
             'formData.processCategory': function (val) {
                 if (val === '') {
@@ -90,6 +107,17 @@
             data.documentation = this.getDocumentation()
 
             this.formData = data
+
+            this.executionListenerLength = this.element.businessObject.extensionElements?.values
+                .filter(item => item.$type === (this.descriptorPrefix + 'ExecutionListener')).length ?? 0
+        },
+        methods: {
+            changeExecutionListenerDrawer(v){
+                this.executionListenerDrawer = v;
+            },
+            saveExecutionListener(v){
+                this.executionListenerLength = v
+            }
         }
     }
 </script>
