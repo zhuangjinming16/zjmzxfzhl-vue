@@ -58,7 +58,7 @@
 
 <script>
     // 汉化
-    import translate from './translate'
+    import translate from './translate/index'
     import Modeler from 'bpmn-js/lib/Modeler'
     import BpmnElement from './BpmnElement'
     // 引入flowable的节点文件
@@ -68,7 +68,7 @@
     import {Message} from 'element-ui'
 
     export default {
-        name: 'Vbpmn',
+        name: 'VueBpmn',
         props: {
             isView: {
                 type: Boolean,
@@ -309,10 +309,10 @@
 
 <style lang="scss">
     /*左边工具栏以及编辑节点的样式*/
-    @import "~bpmn-js/dist/assets/diagram-js.css";
-    @import "~bpmn-js/dist/assets/bpmn-font/css/bpmn.css";
-    @import "~bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css";
-    @import "~bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
+    @import "../../../node_modules/bpmn-js/dist/assets/diagram-js.css";
+    @import "../../../node_modules/bpmn-js/dist/assets/bpmn-font/css/bpmn.css";
+    @import "../../../node_modules/bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css";
+    @import "../../../node_modules/bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
 
     $primary-color: #409EFF;
     $primary-background-color: #ecf5ff;

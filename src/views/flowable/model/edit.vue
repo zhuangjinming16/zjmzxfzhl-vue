@@ -8,7 +8,7 @@
     import {Message} from 'element-ui'
     // import VueBpmn from "@/components/VueBpmn"; // 原生面板
     // import VueBpmn from "@/components/VueElementuiBpmn"; // elementui面板
-    import VueBpmn from "@/components/Vbpmn";
+    import VueBpmn from "@/components/VueBpmn";
 
     export default {
         name: 'FlowableModelEdit',
