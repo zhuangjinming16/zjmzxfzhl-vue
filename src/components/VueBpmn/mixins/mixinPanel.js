@@ -40,7 +40,7 @@ export default {
         },
         updateProperty(propertyName, val, hasDescriptor) {
             if (val === '') {
-                val = null
+                val = undefined
             }
             let properties = {}
             if (hasDescriptor) {
