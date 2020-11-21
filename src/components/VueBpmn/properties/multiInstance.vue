@@ -114,17 +114,25 @@
 
                     if(this.multiInstance.collection){
                         loopCharacteristics.set(this.descriptorPrefix + 'collection',this.multiInstance.collection)
+                    }else{
+                        loopCharacteristics.set(this.descriptorPrefix + 'collection',undefined)
                     }
                     if(this.multiInstance.elementVariable){
                         loopCharacteristics.set(this.descriptorPrefix + 'elementVariable',this.multiInstance.elementVariable)
+                    }else{
+                        loopCharacteristics.set(this.descriptorPrefix + 'elementVariable',undefined)
                     }
                     if (this.multiInstance.loopCardinality) {
                         const loopCardinality = this.modeler.get('moddle').create('bpmn:Expression', {body: this.multiInstance.loopCardinality})
                         loopCharacteristics['loopCardinality'] = loopCardinality
+                    }else{
+                        loopCharacteristics['loopCardinality'] = undefined
                     }
                     if (this.multiInstance.completionCondition) {
                         const completionCondition = this.modeler.get('moddle').create('bpmn:Expression', {body: this.multiInstance.completionCondition})
                         loopCharacteristics['completionCondition'] = completionCondition
+                    }else{
+                        loopCharacteristics['completionCondition'] = undefined
                     }
                     this.updateProperties({loopCharacteristics})
                     hasMultiInstance = true
