@@ -47,12 +47,18 @@
             </el-form>
             <el-button icon="el-icon-close" @click="dialogExcuteTaskVisibleInChild = false">取消</el-button>
             <el-button icon="el-icon-check" type="primary" @click="doComplete">提交</el-button>
-            <el-button v-if="buttons.length>0 && buttons.includes('STOP')"
+            <el-button v-if="buttons.length==0 || buttons.includes('STOP')"
                        icon="el-icon-close" type="primary" @click="doStop">终止
             </el-button>
-            <el-button v-if="buttons.length>0 && buttons.includes('ASSIGN')" icon="el-icon-user" type="primary" @click="doAssign">转办</el-button>
-            <el-button v-if="buttons.length>0 && buttons.includes('DELEGATE')" icon="el-icon-user" type="primary" @click="doDelegate">委派</el-button>
-            <el-button v-if="!initiator && buttons.length>0 && buttons.includes('BACK')" icon="el-icon-back" type="primary" @click="doBack">退回</el-button>
+            <el-button v-if="buttons.length==0 || buttons.includes('ASSIGN')" icon="el-icon-user" type="primary"
+                       @click="doAssign">转办
+            </el-button>
+            <el-button v-if="buttons.length==0 || buttons.includes('DELEGATE')" icon="el-icon-user" type="primary"
+                       @click="doDelegate">委派
+            </el-button>
+            <el-button v-if="!initiator && (buttons.length==0 || buttons.includes('BACK'))" icon="el-icon-back"
+                       type="primary" @click="doBack">退回
+            </el-button>
             <!--<el-button icon="el-icon-back" type="primary" @click="doBackToStart">撤回</el-button>-->
         </div>
     </el-dialog>
