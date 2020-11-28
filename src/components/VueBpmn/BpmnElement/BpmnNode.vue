@@ -64,6 +64,9 @@
                     <el-form-item v-if="!!showConfig.formKey" label="表单Key">
                         <el-input v-model="formData.formKey" clearable/>
                     </el-form-item>
+                    <el-form-item v-if="!!showConfig.buttons" label="按钮">
+                        <el-input v-model="formData.buttons" clearable/>
+                    </el-form-item>
                 </el-collapse-item>
 
                 <el-collapse-item name="4">
@@ -131,6 +134,9 @@
             },
             'formData.formKey': function (val) {
                 this.updateProperty('formKey', val, true)
+            },
+            'formData.buttons': function (val) {
+                this.updateProperty('buttons', val, true)
             },
             'formData.async': function (val) {
                 this.updateProperty('async', val, true)

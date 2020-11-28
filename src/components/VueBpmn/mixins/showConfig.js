@@ -19,6 +19,7 @@ export default {
         // dueDate: true,
         form: true,
         formKey: true,
+        buttons: true,
         multiInstance: true,
         taskListener: true
     },

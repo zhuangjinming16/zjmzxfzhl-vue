@@ -413,6 +413,11 @@
           "type": "String"
         },
         {
+          "name": "buttons",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
           "name": "dueDate",
           "isAttr": true,
           "type": "String"

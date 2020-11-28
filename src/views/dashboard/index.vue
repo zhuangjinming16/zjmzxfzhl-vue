@@ -1,5 +1,11 @@
 <template>
     <div class="dashboard-container">
+        # 2.0.0 升级日志 2020-11-28 <br/>
+        1.将 zjmzxfzhl-common 独立出来管理，可以用于 zjmzxfzhl 也可以用于 zjmzxfzhl-cloud <br/>
+        2.将 zjmzxfzhl-vue 独立出来管理，可以用于 zjmzxfzhl 也可以用于 zjmzxfzhl-cloud <br/>
+        3.新增 zjmzxfzhl-bpmn ，自定义流程设计器也单独维护（MIT开源协议，使用原生 elementui 开发设计），希望更多人参与一起维护 <br/>
+        4.新增流程模型管理功能，并增加流程设计功能 <br/>
+        5.新增流程用户任务节点 flowable:buttons 任务按钮属性，但若未配置则拥有所有按钮功能 <br/>
         # 1.2.0 升级日志 2020-09-21 <br/>
         1.新增流程模型设计器功能 <br/>
         2.新增抄送功能 <br/>

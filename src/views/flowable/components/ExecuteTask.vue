@@ -47,12 +47,12 @@
             </el-form>
             <el-button icon="el-icon-close" @click="dialogExcuteTaskVisibleInChild = false">取消</el-button>
             <el-button icon="el-icon-check" type="primary" @click="doComplete">提交</el-button>
-            <el-button v-if="$store.getters.sysUser.userId==='admin'||$store.getters.sysUser.userId===startUserId"
+            <el-button v-if="buttons.length>0 && buttons.includes('STOP')"
                        icon="el-icon-close" type="primary" @click="doStop">终止
             </el-button>
-            <el-button v-if="!isInitiator" icon="el-icon-user" type="primary" @click="doAssign">转办</el-button>
-            <el-button v-if="!isInitiator" icon="el-icon-user" type="primary" @click="doDelegate">委派</el-button>
-            <el-button v-if="!isInitiator" icon="el-icon-back" type="primary" @click="doBack">退回</el-button>
+            <el-button v-if="buttons.length>0 && buttons.includes('ASSIGN')" icon="el-icon-user" type="primary" @click="doAssign">转办</el-button>
+            <el-button v-if="buttons.length>0 && buttons.includes('DELEGATE')" icon="el-icon-user" type="primary" @click="doDelegate">委派</el-button>
+            <el-button v-if="!initiator && buttons.length>0 && buttons.includes('BACK')" icon="el-icon-back" type="primary" @click="doBack">退回</el-button>
             <!--<el-button icon="el-icon-back" type="primary" @click="doBackToStart">撤回</el-button>-->
         </div>
     </el-dialog>
@@ -107,13 +107,14 @@
                 businessKey: undefined,
                 processInstanceFormData: undefined,
                 startUserId: '',
-                isInitiator: false,
+                initiator: false,
                 selectUserVisible: false,
                 selectUserMultipleSelect: false,
                 selectUserType: '',
                 message: '',
                 ccToVos: [],
-                dialogTaskBackNodesVisible: false
+                dialogTaskBackNodesVisible: false,
+                buttons: []
             }
         },
         created() {
@@ -128,7 +129,8 @@
                     this.businessKey = data.businessKey
                     this.startFormKey = data.startFormKey
                     this.taskFormKey = data.taskFormKey
-                    this.isInitiator = data.isInitiator
+                    this.initiator = data.initiator
+                    this.buttons = data.buttons ?? []
                     if (data.renderedStartForm) {
                         this.startFormJson = JSON.parse(data.renderedStartForm)
                         this.processInstanceFormData = JSON.parse(data.variables.processInstanceFormData)
@@ -168,7 +170,7 @@
                             return putAction('/flowable/task/complete', {
                                 taskId: this.executeTaskId,
                                 message: this.message,
-                                isInitiator: this.isInitiator,
+                                initiator: this.initiator,
                                 values: realValues,
                                 ccToVos: this.ccToVos
                             }).then(({msg}) => {
