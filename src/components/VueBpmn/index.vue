@@ -239,6 +239,7 @@
             handleExportXmlAction() {
                 const _this = this
                 this.modeler.saveXML({format: true}, function (err, xml) {
+                    xml = _this.replaceLtAndGt(xml)
                     _this.download('xml', xml, _this.getProcess().name + '.bpmn20.xml')
                 })
             },
@@ -252,7 +253,7 @@
             // 预览
             handlePreviewXml() {
                 this.modeler.saveXML({format: true}, (err, xml) => {
-                    this.process.xml = xml
+                    this.process.xml = this.replaceLtAndGt(xml)
                     this.xmlVisible = true
                 })
             },
@@ -270,6 +271,7 @@
                         return
                     }
                     this.modeler.saveXML({format: true}, (err, xml) => {
+                        xml = _this.replaceLtAndGt(xml)
                         const process = _this.getProcess()
                         _this.process.xml = xml
                         _this.modelData.editor = xml
@@ -302,6 +304,11 @@
                         : this.scale + radio
                 this.modeler.get('canvas').zoom(newScale)
                 this.scale = newScale
+            },
+            replaceLtAndGt(xml){
+                xml = xml.replace(/&lt;/g, '<')
+                xml = xml.replace(/&gt;/g, '>')
+                return xml
             }
         }
     }

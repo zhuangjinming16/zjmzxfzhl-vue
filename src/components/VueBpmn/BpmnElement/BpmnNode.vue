@@ -143,7 +143,7 @@
             },
             'formData.conditionExpression': function (val) {
                 if (val) {
-                    const newCondition = this.modeler.get('moddle').create('bpmn:FormalExpression', {body: val})
+                    const newCondition = this.modeler.get('moddle').create('bpmn:FormalExpression', {body: `<![CDATA[${val}]]>`})
                     this.updateProperties({conditionExpression: newCondition})
                 } else {
                     this.updateProperties({conditionExpression: null})
@@ -198,7 +198,7 @@
                 ...this.element.businessObject.$attrs,
             }
             data.documentation = this.getDocumentation()
-            data.conditionExpression = this.element.businessObject.conditionExpression?.body
+            data.conditionExpression = this.parseCDATA(this.element.businessObject.conditionExpression?.body)
             this.formData = data
             this.hasMultiInstance = this.element.businessObject.loopCharacteristics ? true : false
             this.executionListenerLength = this.element.businessObject.extensionElements?.values

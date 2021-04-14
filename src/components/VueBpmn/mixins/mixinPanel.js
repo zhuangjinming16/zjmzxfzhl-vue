@@ -68,6 +68,13 @@ export default {
         },
         validate() {
             return this.$refs?.refForm.validate()
+        },
+        parseCDATA(str) {
+            if (str) {
+                const tmp = str.replace(/<!\[CDATA\[(.+)\]\]>/, '$1')
+                const value = tmp.replace(/&lt;!\[CDATA\[(.+)\]\]&gt;/, '$1')
+                return value
+            }
         }
     },
     computed: {
