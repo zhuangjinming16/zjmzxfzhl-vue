@@ -1154,6 +1154,52 @@
       ]
     },
     {
+      "name": "Property",
+      "superClass": [
+        "Element"
+      ],
+      "meta": {
+        "allowedIn": [
+          "flowable:Properties"
+        ]
+      },
+      "properties": [
+        {
+          "name": "name",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "value",
+          "type": "String",
+          "isAttr": true
+        }
+      ]
+    },
+    {
+      "name": "Properties",
+      "superClass": [
+        "Element"
+      ],
+      "meta": {
+        "allowedIn": [
+          "bpmn:Process"
+        ]
+      },
+      "properties": [
+        {
+          "name": "property",
+          "isBody": true,
+          "type": "Property"
+        },
+        {
+          "name": "properties",
+          "type": "Property",
+          "isMany": true
+        }
+      ]
+    },
+    {
       "name": "FormProperty",
       "superClass": [
         "Element"

@@ -48,11 +48,23 @@
                         </el-badge>
                     </el-form-item>
                 </el-collapse-item>
+
+                <el-collapse-item name="4">
+                    <template slot="title">
+                        <span class="el_title">附加属性<i class="header-icon el-icon-info"/></span>
+                    </template>
+                    <el-form-item label="附加属性">
+                        <el-badge :value="propertiesLength">
+                            <el-button @click="propertiesDrawer = true">编辑</el-button>
+                        </el-badge>
+                    </el-form-item>
+                </el-collapse-item>
             </el-collapse>
 
         </el-form>
 
         <listener title="执行监听" type="Execution" :element="element" :modeler="modeler" @changeListenerDrawer="changeExecutionListenerDrawer" @saveListener="saveExecutionListener" :listenerDrawer="executionListenerDrawer"></listener>
+        <properties title="属性" :element="element" :modeler="modeler" @changePropertiesDrawer="changePropertiesDrawer" @saveProperties="saveProperties" :propertiesDrawer="propertiesDrawer"></properties>
 
     </div>
 </template>
@@ -60,10 +72,11 @@
 <script>
     import mixinPanel from '../mixins/mixinPanel'
     import listener from "../properties/listener";
+    import Properties from "../properties/properties";
 
     export default {
         name: 'BpmnProcess',
-        components: {listener},
+        components: {Properties, listener},
         mixins: [mixinPanel],
         props: {
             processCategory: {
@@ -81,6 +94,8 @@
                 },
                 executionListenerDrawer: false,
                 executionListenerLength: 0,
+                propertiesDrawer: false,
+                propertiesLength: 0,
             }
         },
         watch: {
@@ -117,6 +132,12 @@
             },
             saveExecutionListener(v){
                 this.executionListenerLength = v
+            },
+            changePropertiesDrawer(v){
+                this.propertiesDrawer = v;
+            },
+            saveProperties(v){
+                this.propertiesLength = v
             }
         }
     }
