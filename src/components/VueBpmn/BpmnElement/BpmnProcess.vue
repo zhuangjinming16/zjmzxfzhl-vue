@@ -125,6 +125,8 @@
 
             this.executionListenerLength = this.element.businessObject.extensionElements?.values
                 .filter(item => item.$type === (this.descriptorPrefix + 'ExecutionListener')).length ?? 0
+            this.propertiesLength = this.element.businessObject.extensionElements?.values
+                .filter(item => item.$type === (this.descriptorPrefix + 'Properties')).shift()?.values.length ?? 0
         },
         methods: {
             changeExecutionListenerDrawer(v){

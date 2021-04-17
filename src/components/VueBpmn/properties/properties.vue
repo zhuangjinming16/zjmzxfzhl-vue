@@ -81,7 +81,7 @@
                 }
                 this.properties = this.element.businessObject.extensionElements?.values
                     .filter(item => item.$type === (this.descriptorPrefix + 'Properties'))
-                    .shift()?.properties?.map(property => {
+                    .shift()?.values?.map(property => {
                         return {
                             name: property.name,
                             value: property.value
@@ -114,14 +114,16 @@
                     extensionElements = this.modeler.get('moddle').create('bpmn:ExtensionElements')
                 }
                 extensionElements.values = extensionElements.values?.filter(item => item.$type !== (this.descriptorPrefix + 'Properties')) ?? []
-                const propertiesElement = this.modeler.get('moddle').create(this.descriptorPrefix + 'Properties')
-                this.properties.forEach(item => {
-                    const propertyElement = this.modeler.get('moddle').create(this.descriptorPrefix + 'Property')
-                    propertyElement['name'] = item.name
-                    propertyElement['value'] = item.value
-                    propertiesElement.get('properties').push(propertyElement)
-                })
-                extensionElements.get("values").push(propertiesElement)
+                if(this.properties?.length > 0){
+                    const propertiesElement = this.modeler.get('moddle').create(this.descriptorPrefix + 'Properties')
+                    this.properties.forEach(item => {
+                        const propertyElement = this.modeler.get('moddle').create(this.descriptorPrefix + 'Property')
+                        propertyElement['name'] = item.name
+                        propertyElement['value'] = item.value
+                        propertiesElement.get('values').push(propertyElement)
+                    })
+                    extensionElements.get("values").push(propertiesElement)
+                }
 
                 this.updateProperties({extensionElements: extensionElements.get('values')?.length == 0 ? undefined : extensionElements})
                 this._propertiesDrawer = false

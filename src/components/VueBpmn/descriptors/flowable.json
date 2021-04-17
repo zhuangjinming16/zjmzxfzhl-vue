@@ -1177,29 +1177,6 @@
       ]
     },
     {
-      "name": "Properties",
-      "superClass": [
-        "Element"
-      ],
-      "meta": {
-        "allowedIn": [
-          "bpmn:Process"
-        ]
-      },
-      "properties": [
-        {
-          "name": "property",
-          "isBody": true,
-          "type": "Property"
-        },
-        {
-          "name": "properties",
-          "type": "Property",
-          "isMany": true
-        }
-      ]
-    },
-    {
       "name": "FormProperty",
       "superClass": [
         "Element"

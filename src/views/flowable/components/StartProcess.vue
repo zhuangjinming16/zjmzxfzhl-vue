@@ -82,19 +82,14 @@
         },
         methods: {
             initData() {
-                if (this.processDefinition.formKey) {
-                    getAction('/flowable/processDefinition/renderedStartForm', {processDefinitionId: this.processDefinition.id}).then(res => {
-                        const {data} = res
-                        this.showBusinessKey = data.showBusinessKey
-                        if (data.renderedStartForm) {
-                            this.startFormJson = JSON.parse(data.renderedStartForm)
-                            this.generateStartFormVisible = true
-                        }
-                    })
-                }
-                // else {
-                //     this.fullscreen = false
-                // }
+                getAction('/flowable/processDefinition/renderedStartForm', {processDefinitionId: this.processDefinition.id}).then(res => {
+                    const {data} = res
+                    this.showBusinessKey = data.showBusinessKey
+                    if (data.renderedStartForm) {
+                        this.startFormJson = JSON.parse(data.renderedStartForm)
+                        this.generateStartFormVisible = true
+                    }
+                })
             },
             doSelectCcTo() {
                 this.selectUserVisible = true
