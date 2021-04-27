@@ -1,6 +1,9 @@
 <template>
     <div class="app-container">
         <div class="filter-container">
+            <el-checkbox v-model="listQuery.latestVersion">最新版本</el-checkbox>
+        </div>
+        <div class="filter-container">
             <el-input v-model="listQuery.modelKey" placeholder="模型key" style="width: 200px;" class="filter-item"
                       @keyup.enter.native="btnQuery"/>
             <el-input v-model="listQuery.modelName" placeholder="模型名称" style="width: 200px;" class="filter-item"
@@ -63,8 +66,11 @@
                         <span class="el-dropdown-link">操作<i class="el-icon-arrow-down el-icon--right"></i></span>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item icon="el-icon-view" @click.native="btnView(row)">查看</el-dropdown-item>
-                            <el-dropdown-item v-permission="'flowable:model:update'" icon="el-icon-edit" divided
+                            <!--<el-dropdown-item v-permission="'flowable:model:update'" icon="el-icon-edit" divided
                                               @click.native="btnUpdate(row)">修改
+                            </el-dropdown-item>-->
+                            <el-dropdown-item v-permission="'flowable:model:copy'" icon="el-icon-edit" divided
+                                              @click.native="btnCopy(row)">复制
                             </el-dropdown-item>
                             <el-dropdown-item v-permission="'flowable:model:saveModelEditor'" icon="el-icon-edit"
                                               divided
@@ -76,7 +82,7 @@
                             <el-dropdown-item v-permission="'flowable:model:delete'" icon="el-icon-delete" divided
                                               @click.native="btnDelete(row.id,true)">删除包含历史
                             </el-dropdown-item>
-                            <el-dropdown-item v-permission="'flowable:model:deploy'" icon="el-icon-edit" divided
+                            <el-dropdown-item v-if="!row.deployed" v-permission="'flowable:model:deploy'" icon="el-icon-edit" divided
                                               @click.native="btnDeploy(row.id)">部署
                             </el-dropdown-item>
                         </el-dropdown-menu>
@@ -155,6 +161,7 @@
                     current: 1,
                     size: 10,
                     modelKey: undefined,
+                    latestVersion: true,
                     modelName: undefined,
                     modelCategory: undefined
                 },
@@ -201,6 +208,7 @@
                     current: 1,
                     size: 10,
                     modelKey: undefined,
+                    latestVersion: true,
                     modelName: undefined,
                     modelCategory: undefined
                 }
@@ -238,7 +246,7 @@
             beforeUpload(file) {
                 // 上传前格式与大小校验
                 const fileName = file.name
-                const isFileTypeOk = fileName.endsWith('.bpmn20.xml') || fileName.endsWith('.bpmn')
+                const isFileTypeOk = fileName.endsWith('.bpmn20.xml') || fileName.endsWith('.bpmn') || fileName.endsWith('.bar') || fileName.endsWith('.zip')
                 const isLt512 = file.size / 1024 / 512 < 1;
                 if (!isFileTypeOk) {
                     Message.error("上传文件格式不正确");
@@ -277,8 +285,14 @@
                     this.$refs['dataForm'].clearValidate()
                 })
             },
+            btnCopy(row) {
+                putAction('/flowable/model/copy', {id:row.id}).then(({msg}) => {
+                    Message.success(msg)
+                    this.list()
+                })
+            },
             btnUpdateModel(row) {
-                this.$router.push({path: '/flowableModelEdit', query: {id: row.id}})
+                this.$router.push({path: '/flowableModelEdit', query: {id: row.id,isView: row.deployed}})
             },
             updateData() {
                 this.$refs['dataForm'].validate((valid) => {

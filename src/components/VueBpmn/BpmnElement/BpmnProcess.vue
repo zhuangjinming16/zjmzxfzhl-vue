@@ -8,7 +8,7 @@
                     </template>
 
                     <el-form-item label="流程主键" prop="id">
-                        <el-input v-model="formData.id" clearable/>
+                        <el-input v-model="formData.id" disabled="true"/>
                     </el-form-item>
                     <el-form-item label="流程名称" prop="name">
                         <el-input v-model="formData.name" clearable/>

@@ -1,6 +1,6 @@
 <template>
     <div v-if="show">
-        <vue-bpmn @save="btnSave" :modelData="modelData"/>
+        <vue-bpmn @save="btnSave" :modelData="modelData" :isView="isView"/>
     </div>
 </template>
 <script>
@@ -16,6 +16,7 @@
         data() {
             return {
                 id: undefined,
+                isView: false,
                 modelData: {
                     id: undefined,
                     editor: undefined
@@ -26,6 +27,9 @@
         mounted() {
             if (this.$route.query && this.$route.query.id) {
                 this.id = this.$route.query.id
+            }
+            if (this.$route.query && this.$route.query.isView) {
+                this.isView = this.$route.query.isView
             }
             this.getModelData()
         },
