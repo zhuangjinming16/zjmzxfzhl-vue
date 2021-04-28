@@ -17,7 +17,7 @@
                 <el-button icon="el-icon-tickets" @click="handlePreviewXml">预览</el-button>
                 <el-button icon="el-icon-delete" @click="handleClear">清空</el-button>
 
-                <el-button v-permission="'flowable:model:save,flowable:model:update'" icon="el-icon-upload"
+                <el-button v-permission="'flowable:model:save'" icon="el-icon-upload"
                            @click="handleSave">保存
                 </el-button>
             </el-button-group>
