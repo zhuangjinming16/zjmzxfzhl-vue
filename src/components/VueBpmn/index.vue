@@ -27,7 +27,7 @@
                 <el-container class="containers">
                     <div class="canvas" ref="canvas"/>
                 </el-container>
-                <el-aside class="widget-config-container">
+                <el-aside class="widget-config-container1">
                     <bpmn-element ref="_bpmnElement" v-if="modeler" :modeler="modeler"
                                     :processCategory="processCategory" :taskCategory="taskCategory"/>
                 </el-aside>
@@ -379,7 +379,7 @@
         border-right: 1px solid #e0e0e0;
     }
 
-    .widget-config-container {
+    .widget-config-container1 {
         position: relative;
         border-left: solid 1px #e4e7ed;
 
