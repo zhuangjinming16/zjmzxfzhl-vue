@@ -1,8 +1,8 @@
 <template>
     <el-dialog title="发起流程" :visible.sync="dialogStartProcessVisibleInChild" :fullscreen="false">
         <div v-if="generateStartFormVisible">
-            <fm-generate-form :data="startFormJson" ref="generateStartForm">
-            </fm-generate-form>
+            <form-parser :data="startFormJson" ref="generateStartForm">
+            </form-parser>
         </div>
         <select-user ref="selectUser" :visible.sync="selectUserVisible" :appendToBody="true"
                      :multipleSelect="true"
@@ -27,6 +27,7 @@
                 </el-form-item>
             </el-form>
             <el-button icon="el-icon-close" @click="dialogStartProcessVisibleInChild = false">取消</el-button>
+            <el-button icon="el-icon-close" @click="reset">重置</el-button>
             <el-button icon="el-icon-check" type="primary" @click="doStartInstance">确定
             </el-button>
         </div>
@@ -37,10 +38,11 @@
     import {getAction, postAction} from '@/api/manage'
     import {Message} from 'element-ui'
     import SelectUser from '@/components/select/SelectUser'
+    import FormParser from '@/views/flowable/form/FormParser'
 
     export default {
         name: 'StartProcess',
-        components: {SelectUser},
+        components: {SelectUser,FormParser},
         props: {
             visible: {
                 type: Boolean,
@@ -135,6 +137,10 @@
                         this.dialogStartProcessVisibleInChild = false
                     })
                 }
+            },
+            reset() {
+                this.$refs.generateStartForm.resetFields()
+                this.ccToVos = []
             }
         }
     }

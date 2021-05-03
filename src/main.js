@@ -10,6 +10,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/zh-CN'
 
 import '@/styles/index.scss' // global css
+import '@/components/FormGenerator/styles/index.scss';
 import FormMaking from 'form-making'
 import 'form-making/dist/FormMaking.css'
 import App from './App'

@@ -1,20 +1,20 @@
 <template>
-    <div class="form-making-height">
-        <fm-making-form ref="makingFrom" preview generate-json>
-            <template slot="action">
-                <el-button v-permission="'flowable:form:save,flowable:form:update'" type="text" icon="el-icon-upload"
-                           @click="btnSave">保存
-                </el-button>
+    <div>
+        <form-design ref="formDesign">
+            <template v-slot:action>
+                <el-button type="text" icon="el-icon-check" @click="btnSave">保存</el-button>
             </template>
-        </fm-making-form>
+        </form-design>
     </div>
 </template>
 <script>
     import {getAction, putAction} from '@/api/manage'
     import {Message} from 'element-ui'
+    import FormDesign from "./FormDesign";
 
     export default {
         name: 'FlowableFormEdit',
+        components: {FormDesign},
         data() {
             return {
                 formKey: undefined,
@@ -22,8 +22,7 @@
                     formKey: undefined,
                     formName: '',
                     formJson: ''
-                },
-                defaultJson: {"list": [], "config": {"labelWidth": 100, "labelPosition": "right", "size": "small"}}
+                }
             }
         },
         created() {
@@ -40,15 +39,12 @@
                 }
                 getAction('/flowable/form/queryById', {id: this.formKey}).then(({data}) => {
                     this.formData = data
-                    if (this.formData && this.formData.formJson) {
-                        setTimeout(() => this.$refs.makingFrom.setJSON(JSON.parse(this.formData.formJson)), 100)
-                    } else {
-                        setTimeout(() => this.$refs.makingFrom.setJSON(this.defaultJson), 100)
-                    }
+                    let json = this.formData?.formJson
+                    setTimeout(() => this.$refs.formDesign.setJSON(json?JSON.parse(json):undefined, 100))
                 })
             },
             btnSave() {
-                this.formData.formJson = JSON.stringify(this.$refs.makingFrom.getJSON())
+                this.formData.formJson = JSON.stringify(this.$refs.formDesign.getJSON())
                 putAction('/flowable/form/update', this.formData).then(({msg, data}) => {
                     Message.success(msg)
                 })
@@ -56,9 +52,3 @@
         }
     }
 </script>
-
-<style lang="scss">
-    .form-making-height {
-        height: calc(100vh - 84px);
-    }
-</style>

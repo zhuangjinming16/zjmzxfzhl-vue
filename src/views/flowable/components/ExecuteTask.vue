@@ -2,11 +2,11 @@
     <el-dialog title="执行任务" :visible.sync="dialogExcuteTaskVisibleInChild" :fullscreen="false">
         <el-tabs v-model="activeName" type="border-card">
             <el-tab-pane name="taskForm" label="任务表单" v-if="generateTaskFormVisible">
-                <fm-generate-form :data="taskFormJson" :value="taskFormData" ref="generateFormTask"></fm-generate-form>
+                <form-parser :data="taskFormJson" :value="taskFormData" ref="generateFormTask"></form-parser>
             </el-tab-pane>
             <el-tab-pane name="processInstanceForm" label="流程表单(只读)">
-                <fm-generate-form v-if="generateStartFormVisible" :data="startFormJson" :value="processInstanceFormData"
-                                  ref="generateFormStart"></fm-generate-form>
+                <form-parser v-if="generateStartFormVisible" :data="startFormJson" :value="processInstanceFormData"
+                                  ref="generateFormStart"></form-parser>
                 <el-form label-width="100px" v-if="showBusinessKey">
                     <el-form-item label="业务主键Key:">
                         <el-input v-model="businessKey" disabled/>
@@ -46,6 +46,7 @@
                 </el-form-item>
             </el-form>
             <el-button icon="el-icon-close" @click="dialogExcuteTaskVisibleInChild = false">取消</el-button>
+            <el-button icon="el-icon-close" @click="reset">重置</el-button>
             <el-button icon="el-icon-check" type="primary" @click="doComplete">提交</el-button>
             <el-button v-if="buttons.length==0 || buttons.includes('STOP')"
                        icon="el-icon-close" type="primary" @click="doStop">终止
@@ -70,10 +71,11 @@
     import SelectUser from '@/components/select/SelectUser'
     import CustomError from '@/customError'
     import TaskBackNodes from '../components/TaskBackNodes'
+    import FormParser from '@/views/flowable/form/FormParser'
 
     export default {
         name: 'ExecuteTask',
-        components: {SelectUser, TaskBackNodes},
+        components: {SelectUser, TaskBackNodes,FormParser},
         props: {
             visible: {
                 type: Boolean,
@@ -286,6 +288,12 @@
                     this.dialogExcuteTaskVisibleInChild = false
                     this.$emit("executeTaskFinished");
                 })
+            },
+            reset() {
+                this.$refs.generateFormTask?.resetFields()
+                this.businessKey = undefined
+                this.message = undefined
+                this.ccToVos = []
             }
         }
     }

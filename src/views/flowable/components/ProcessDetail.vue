@@ -29,8 +29,8 @@
             </el-tab-pane>
             <el-tab-pane label="流程表单" name="processIntanceForm">
                 <div v-if="generateStartFormVisible">
-                    <fm-generate-form :data="startFormJson" :value="variables" ref="generateStartForm">
-                    </fm-generate-form>
+                    <form-parser :data="startFormJson" :value="variables" ref="generateStartForm">
+                    </form-parser>
                 </div>
                 <el-form label-width="100px" v-if="showBusinessKey">
                     <el-form-item label="业务主键Key:">
@@ -52,9 +52,11 @@
 <script>
     import {getAction} from '@/api/manage'
     import {getToken} from '@/utils/auth'
+    import FormParser from '@/views/flowable/form/FormParser'
 
     export default {
         name: 'ProcessDetail',
+        components: {FormParser},
         props: {
             visible: {
                 type: Boolean,
