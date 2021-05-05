@@ -34,7 +34,7 @@ export default {
   props: ['formConf'],
   data() {
     return {
-      innerFormConf: this.formConf.Parser,
+      innerFormConf: this.formConf,
       // 防止模型应重新渲染parser
       isShowParser: true
     }

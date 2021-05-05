@@ -5,6 +5,7 @@ import Cookies from 'js-cookie'
 
 import 'normalize.css/normalize.css'
 
+import axios from 'axios'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/zh-CN'
@@ -20,6 +21,8 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 import {formatDictText, getDicts} from '@/utils/util'
+import {getToken} from '@/utils/auth'
+import {getAction} from '@/api/manage'
 
 import permission from "./directive/permission/permission";
 
@@ -41,8 +44,13 @@ Vue.use(FormMaking)
 Vue.directive('permission', permission)
 
 Vue.config.productionTip = false
+
+Vue.prototype.$axios = axios
+
 Vue.prototype.getDicts = getDicts
 Vue.prototype.formatDictText = formatDictText
+Vue.prototype.getToken = getToken
+Vue.prototype.getAction = getAction
 
 new Vue({
     el: '#app',

@@ -9,7 +9,9 @@ export const formConf = {
   gutter: 15,
   disabled: false,
   span: 24,
-  formBtns: false
+  formBtns: false,
+  datasourceUrl: '',
+  datasource: {}
 }
 
 // 输入型组件 【左面板】
@@ -159,6 +161,14 @@ export const selectComponents = [
       tag: 'el-select',
       tagIcon: 'select',
       layout: 'colFormItem',
+      dataType: 'dynamic',
+      dynamicOptions:{
+        label: 'label',
+        value: 'value',
+        children: 'children'
+      },
+      dataPath: 'list',
+      dataConsumer: '__slot__.options',
       span: 24,
       required: true,
       regList: [],
@@ -184,8 +194,14 @@ export const selectComponents = [
   {
     __config__: {
       label: '级联选择',
-      url: 'https://www.fastmock.site/mock/f8d7a54fb1e60561e2f720d5a810009d/fg/cascaderList',
-      method: 'get',
+      // url: 'https://www.fastmock.site/mock/f8d7a54fb1e60561e2f720d5a810009d/fg/cascaderList',
+      // method: 'get',
+      dataType: 'dynamic',
+      dynamicOptions:{
+        label: 'label',
+        value: 'value',
+        children: 'children'
+      },
       dataPath: 'list',
       dataConsumer: 'options',
       showLabel: true,
@@ -194,7 +210,6 @@ export const selectComponents = [
       tagIcon: 'cascader',
       layout: 'colFormItem',
       defaultValue: [],
-      dataType: 'dynamic',
       span: 24,
       required: true,
       regList: [],
@@ -202,11 +217,9 @@ export const selectComponents = [
       document: 'https://element.eleme.cn/#/zh-CN/component/cascader'
     },
     options: [{
-      id: 1,
       value: 1,
       label: '选项1',
       children: [{
-        id: 2,
         value: 2,
         label: '选项1-1'
       }]
@@ -215,10 +228,10 @@ export const selectComponents = [
     style: { width: '100%' },
     props: {
       props: {
-        multiple: false,
-        label: 'label',
-        value: 'value',
-        children: 'children'
+        multiple: false
+        // label: 'label',
+        // value: 'value',
+        // children: 'children'
       }
     },
     'show-all-levels': true,
@@ -237,6 +250,14 @@ export const selectComponents = [
       changeTag: true,
       defaultValue: undefined,
       layout: 'colFormItem',
+      dataType: 'dynamic',
+      dynamicOptions:{
+        label: 'label',
+        value: 'value',
+        children: 'children'
+      },
+      dataPath: 'list',
+      dataConsumer: '__slot__.options',
       span: 24,
       optionType: 'default',
       regList: [],
@@ -267,6 +288,14 @@ export const selectComponents = [
       showLabel: true,
       labelWidth: null,
       layout: 'colFormItem',
+      dataType: 'dynamic',
+      dynamicOptions:{
+        label: 'label',
+        value: 'value',
+        children: 'children'
+      },
+      dataPath: 'list',
+      dataConsumer: '__slot__.options',
       optionType: 'default',
       required: true,
       regList: [],

@@ -155,3 +155,14 @@ export function isObjectNull(t) {
 export function isObjectUnde(t) {
   return toStr(t) === '[object Undefined]'
 }
+export function setObjectValueReduce(obj, strKeys, data) {
+  const arr = strKeys.split('.')
+  arr.reduce((pre, item, i) => {
+    if (arr.length === i + 1) {
+      pre[item] = data
+    } else if (toStr(pre[item]) !== '[object Object]') {
+      pre[item] = {}
+    }
+    return pre[item]
+  }, obj)
+}

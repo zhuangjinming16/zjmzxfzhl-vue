@@ -1,6 +1,7 @@
 <script>
 import { deepClone } from '@/components/FormGenerator/utils/index'
 import render from '@/components/FormGenerator/components/render/render.js'
+import { setObjectValueReduce } from '@/components/FormGenerator/utils/index'
 
 const ruleTrigger = {
   'el-input': 'blur',
@@ -154,6 +155,34 @@ export default {
     this.buildRules(data.formConfCopy.fields, data[this.formConf.formRules])
     return data
   },
+  // add by zjm16 begin
+  created () {
+    if(this.formConfCopy.datasourceUrl){
+      this.getAction(
+          this.formConfCopy.datasourceUrl
+        ).then((data) => {
+          this.formConfCopy.datasource = data
+          this.formConfCopy.fields.forEach( field => {
+            const { dataPath, dataConsumer, dynamicOptions } = field.__config__
+            if(field.__config__.dataType=='dynamic'){
+              let tempData = dataPath.split('.').reduce((pre, item) => pre[item], data)
+              let realData
+              if(tempData && dynamicOptions){
+                realData = tempData.map(item => {
+                  return {
+                    value: item[dynamicOptions.value],
+                    label: item[dynamicOptions.label],
+                    children: item[dynamicOptions.children]
+                  }
+                })
+              }
+              setObjectValueReduce(field, dataConsumer, realData)
+            }
+          })
+        })
+    }
+  },
+  // add by zjm16 end
   methods: {
     initFormData(componentList, formData) {
       componentList.forEach(cur => {

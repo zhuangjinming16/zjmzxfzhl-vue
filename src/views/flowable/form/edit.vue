@@ -40,7 +40,7 @@
                 getAction('/flowable/form/queryById', {id: this.formKey}).then(({data}) => {
                     this.formData = data
                     let json = this.formData?.formJson
-                    setTimeout(() => this.$refs.formDesign.setJSON(json?JSON.parse(json):undefined, 100))
+                    setTimeout(() => this.$refs.formDesign.setJSON(json?JSON.parse(json):undefined), 100)
                 })
             },
             btnSave() {
