@@ -109,12 +109,29 @@
       size="100%"
       :generate-conf="generateConf"
     />
-    <json-drawer
+    <!-- <json-drawer
       size="60%"
       :visible.sync="jsonDrawerVisible"
       :json-str="JSON.stringify(formData)"
       @refresh="refreshJson"
-    />
+    /> -->
+
+    <el-dialog :visible.sync="jsonDrawerVisible" title="查看json" fullscreen center>
+        <vue-ace-editor v-model="JSON.stringify(formData,null,2)"
+                        @init="editorInit"
+                        lang="json"
+                        theme="chrome"
+                        width="100%"
+                        height="calc(100vh - 214px)"
+                        :options="{wrap: true, readOnly: true}">
+        </vue-ace-editor>
+        <span slot="footer">
+          <el-button icon="el-icon-document" type="primary" v-clipboard:copy="JSON.stringify(formData)"
+                      v-clipboard:success="onCopy">复 制</el-button>
+          <el-button icon="el-icon-close" @click="jsonDrawerVisible = false">关闭</el-button>
+        </span>
+    </el-dialog>
+
     <code-type-dialog
       :visible.sync="dialogVisible"
       title="选择生成类型"
@@ -159,6 +176,7 @@ import {
   getDrawingList, saveDrawingList, getIdGlobal, saveIdGlobal, getFormConf
 } from '@/components/FormGenerator/utils/db'
 import loadBeautifier from '@/components/FormGenerator/utils/loadBeautifier'
+import VueAceEditor from 'vue2-ace-editor'
 
 let beautifier
 const emptyActiveData = { style: {}, autosize: {} }
@@ -178,7 +196,8 @@ export default {
     RightPanel,
     CodeTypeDialog,
     DraggableItem,
-    ParserDialog
+    ParserDialog,
+    VueAceEditor
   },
   props:['formDataProp'],
   data() {
@@ -424,9 +443,17 @@ export default {
       const css = cssStyle(makeUpCss(this.formData))
       return beautifier.html(html + script + css, beautifierConf.html)
     },
+    editorInit: function () {
+        require('brace/ext/language_tools')
+        require('brace/mode/json')
+        require('brace/theme/chrome')
+    },
     showJson() {
       this.AssembleFormData()
       this.jsonDrawerVisible = true
+    },
+    onCopy() {
+        this.$message.success('内容复制成功')
     },
     preview() {
       this.AssembleFormData()
