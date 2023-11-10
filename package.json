@@ -15,7 +15,7 @@
     "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml"
   },
   "dependencies": {
-    "axios": "0.18.1",
+    "axios": "1.6.0",
     "bpmn-js": "^7.2.1",
     "bpmn-js-properties-panel": "^0.34.0",
     "bpmn-moddle": "^6.0.0",
